@@ -35,10 +35,11 @@ jobs:
       - uses: actions/checkout@v5
 
       # Scan code using the project's configuration on https://semgrep.dev/manage
+      # The action accepts CLI arguments via `args`, including `--sarif --output`.
       - uses: semgrep/semgrep-action@v1
         with:
           publishToken: ${{ secrets.SEMGREP_APP_TOKEN }}
-          generateSarif: "1"
+          args: --sarif --output semgrep.sarif
 
       # Upload SARIF file generated in previous step
       - name: Upload SARIF file
