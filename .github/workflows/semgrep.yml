@@ -34,7 +34,7 @@ jobs:
       image: semgrep/semgrep:latest
     steps:
       # Checkout project source
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v5
 
       # Run a Semgrep Community Edition scan and emit SARIF for GitHub code scanning.
       - name: Run Semgrep
