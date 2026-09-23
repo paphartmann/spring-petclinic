@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v7.0.1
 
       - name: Create k8s Kind Cluster
         uses: helm/kind-action@v1
@@ -31,4 +31,3 @@ jobs:
         run: |
           kubectl wait --for=condition=ready pod -l app=demo-db --timeout=180s
           kubectl wait --for=condition=ready pod -l app=petclinic --timeout=180s
-
