@@ -36,9 +36,16 @@ jobs:
       # Checkout project source
       - uses: actions/checkout@v5
 
-      # Run a Semgrep Community Edition scan and emit SARIF for GitHub code scanning.
+      # Run strict security rules and emit SARIF for GitHub code scanning.
       - name: Run Semgrep
-        run: semgrep scan --config auto --sarif --output semgrep.sarif
+        run: >-
+          semgrep scan
+          --config auto
+          --config p/security-audit
+          --severity INFO
+          --error
+          --sarif
+          --output semgrep.sarif
         if: always()
 
       # Upload SARIF file generated in previous step
