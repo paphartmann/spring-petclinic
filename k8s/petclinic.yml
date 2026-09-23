@@ -28,6 +28,10 @@ spec:
       labels:
         app: petclinic
     spec:
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: workload
           image: dsyer/petclinic
