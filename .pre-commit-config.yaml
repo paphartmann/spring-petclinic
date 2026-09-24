@@ -3,3 +3,10 @@ repos:
     rev: v8.24.2
     hooks:
       - id: gitleaks
+  - repo: local
+    hooks:
+      - id: maven-compile
+        name: Compile project with Maven
+        entry: ./mvnw -B -DskipTests compile
+        language: system
+        pass_filenames: false
