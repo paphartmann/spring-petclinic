@@ -30,9 +30,12 @@ jobs:
           cache: maven
 
       - name: Check dependencies
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
         run: >
           ./mvnw -B org.owasp:dependency-check-maven:12.1.0:check
           -DfailBuildOnCVSS=7
+          -DnvdApiKey="${NVD_API_KEY}"
 
       - name: Upload Dependency-Check report
         if: always()
