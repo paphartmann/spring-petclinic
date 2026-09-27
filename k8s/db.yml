@@ -40,6 +40,8 @@ spec:
       labels:
         app: demo-db
     spec:
+      securityContext:
+        fsGroup: 999
       containers:
         - image: postgres:18.4
           name: postgresql
@@ -51,6 +53,7 @@ spec:
             runAsNonRoot: true
             runAsUser: 999
             runAsGroup: 999
+            readOnlyRootFilesystem: true
             seccompProfile:
               type: RuntimeDefault
           env:
@@ -81,3 +84,17 @@ spec:
           startupProbe:
             tcpSocket:
               port: postgresql
+          volumeMounts:
+            - mountPath: /var/lib/postgresql
+              name: postgres-data
+            - mountPath: /var/run/postgresql
+              name: postgres-run
+            - mountPath: /tmp
+              name: tmp
+      volumes:
+        - name: postgres-data
+          emptyDir: {}
+        - name: postgres-run
+          emptyDir: {}
+        - name: tmp
+          emptyDir: {}

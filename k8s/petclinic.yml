@@ -30,11 +30,14 @@ spec:
     spec:
       securityContext:
         runAsNonRoot: true
+        fsGroup: 1000
         seccompProfile:
           type: RuntimeDefault
       containers:
         - name: workload
           image: dsyer/petclinic
+          securityContext:
+            readOnlyRootFilesystem: true
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: postgres
@@ -60,9 +63,13 @@ spec:
             - mountPath: /bindings/secret
               name: binding
               readOnly: true
+            - mountPath: /tmp
+              name: tmp
       volumes:
         - name: binding
           projected:
             sources:
               - secret:
                   name: demo-db
+        - name: tmp
+          emptyDir: {}
