@@ -48,6 +48,14 @@ There is no `Dockerfile` in this project. You can build a container image (if yo
 ./mvnw spring-boot:build-image
 ```
 
+## Kubernetes Configuration Security
+
+The `Container Configuration Security` GitHub Actions workflow scans the Kubernetes manifests in `k8s/` with Trivy when they change. High- and critical-severity misconfigurations fail the workflow. To run the same scan locally after [installing Trivy](https://trivy.dev/latest/getting-started/installation/), use:
+
+```bash
+trivy config --exit-code 1 --severity HIGH,CRITICAL --format table k8s/
+```
+
 ## Running the Container Image
 
 ```bash

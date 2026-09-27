@@ -1,0 +1,32 @@
+name: Container Configuration Security
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'k8s/**'
+      - '.github/workflows/container-security.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'k8s/**'
+      - '.github/workflows/container-security.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  trivy-config:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Install Trivy
+        uses: aquasecurity/setup-trivy@e07451d2e059ed86c2870430ea286b3a9e0bf241
+        with:
+          version: v0.68.2
+
+      - name: Scan Kubernetes configuration
+        run: trivy config --exit-code 1 --severity HIGH,CRITICAL --format table k8s/
