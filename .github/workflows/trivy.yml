@@ -49,8 +49,38 @@ jobs:
           template: '@/contrib/sarif.tpl'
           output: 'trivy-results.sarif'
           severity: 'CRITICAL,HIGH'
+          timeout: '10m'
 
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: 'trivy-results.sarif'
+          category: trivy-container-image
+
+  kubernetes-manifests:
+    name: Kubernetes manifest security
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Scan Kubernetes manifests with Trivy
+        uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
+        with:
+          scan-type: config
+          image-ref: '.'
+          scan-ref: 'k8s/'
+          format: sarif
+          output: trivy-kubernetes-results.sarif
+          severity: 'CRITICAL,HIGH'
+          timeout: '10m'
+
+      - name: Upload Kubernetes scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-kubernetes-results.sarif
+          category: trivy-kubernetes-manifests
