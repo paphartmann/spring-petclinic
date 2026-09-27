@@ -23,10 +23,10 @@ jobs:
       - name: Check out the repository
         uses: actions/checkout@v4
 
-      - name: Install Trivy
-        uses: aquasecurity/setup-trivy@e07451d2e059ed86c2870430ea286b3a9e0bf241
-        with:
-          version: v0.68.2
-
       - name: Scan Kubernetes configuration
-        run: trivy config --exit-code 1 --severity HIGH,CRITICAL --format table k8s/
+        run: >-
+          docker run --rm
+          -v "$GITHUB_WORKSPACE:/work:ro"
+          -w /work
+          aquasec/trivy:0.68.2
+          config --exit-code 1 --severity HIGH,CRITICAL --format table /work/k8s/
