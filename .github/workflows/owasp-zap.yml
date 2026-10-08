@@ -51,6 +51,14 @@ jobs:
           cmd_options: '-a'
           allow_issue_writing: false
 
+      - name: OWASP ZAP API Scan
+        uses: zaproxy/action-api-scan@v0.10.0
+        with:
+          target: '.github/zap/petclinic-api.yaml'
+          format: openapi
+          cmd_options: '-a'
+          allow_issue_writing: false
+
       - name: Show application logs on failure
         if: failure()
         run: tail -n 200 petclinic.log

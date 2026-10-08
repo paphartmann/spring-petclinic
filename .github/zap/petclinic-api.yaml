@@ -1,0 +1,500 @@
+openapi: 3.0.3
+info:
+  title: Spring PetClinic HTTP Endpoints
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+paths:
+  /:
+    get:
+      operationId: home
+      summary: Show the home page
+      responses:
+        '200':
+          description: Home page
+  /oups:
+    get:
+      operationId: triggerException
+      summary: Trigger the sample exception page
+      responses:
+        '500':
+          description: Sample exception response
+  /vets.html:
+    get:
+      operationId: listVetsHtml
+      summary: Show the veterinarian page
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: Veterinarian page
+        '302':
+          description: Redirect to the first page when out of bounds
+  /vets:
+    get:
+      operationId: listVets
+      summary: List veterinarians
+      responses:
+        '200':
+          description: Veterinarian list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  vetList:
+                    type: array
+                    items:
+                      type: object
+                      additionalProperties: true
+  /owners/new:
+    get:
+      operationId: newOwnerForm
+      summary: Show the new owner form
+      responses:
+        '200':
+          description: Owner form
+    post:
+      operationId: createOwner
+      summary: Create an owner
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                address:
+                  type: string
+                city:
+                  type: string
+                telephone:
+                  type: string
+              additionalProperties: true
+      responses:
+        '200':
+          description: Owner form with validation errors
+        '302':
+          description: Redirect to the created owner
+  /owners/find:
+    get:
+      operationId: findOwnerForm
+      summary: Show the owner search form
+      responses:
+        '200':
+          description: Owner search form
+  /owners:
+    get:
+      operationId: findOwners
+      summary: Search and list owners
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: lastName
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Owner search results
+        '302':
+          description: Redirect to the first page when out of bounds
+  /owners/{ownerId}:
+    parameters:
+      - name: ownerId
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      operationId: showOwner
+      summary: Show an owner's details
+      responses:
+        '200':
+          description: Owner details
+  /owners/{ownerId}/edit:
+    parameters:
+      - name: ownerId
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      operationId: editOwnerForm
+      summary: Show the edit owner form
+      responses:
+        '200':
+          description: Owner form
+    post:
+      operationId: updateOwner
+      summary: Update an owner
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                address:
+                  type: string
+                city:
+                  type: string
+                telephone:
+                  type: string
+              additionalProperties: true
+      responses:
+        '200':
+          description: Owner form with validation errors
+        '302':
+          description: Redirect to the updated owner
+  /owners/{ownerId}/pets/new:
+    parameters:
+      - name: ownerId
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      operationId: newPetForm
+      summary: Show the new pet form
+      responses:
+        '200':
+          description: Pet form
+    post:
+      operationId: createPet
+      summary: Add a pet to an owner
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                birthDate:
+                  type: string
+                  format: date
+                type.id:
+                  type: integer
+              additionalProperties: true
+      responses:
+        '200':
+          description: Pet form with validation errors
+        '302':
+          description: Redirect to the owner
+  /owners/{ownerId}/pets/{petId}/edit:
+    parameters:
+      - name: ownerId
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: petId
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      operationId: editPetForm
+      summary: Show the edit pet form
+      responses:
+        '200':
+          description: Pet form
+    post:
+      operationId: updatePet
+      summary: Update a pet
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                birthDate:
+                  type: string
+                  format: date
+                type.id:
+                  type: integer
+              additionalProperties: true
+      responses:
+        '200':
+          description: Pet form with validation errors
+        '302':
+          description: Redirect to the owner
+  /owners/{ownerId}/pets/{petId}/visits/new:
+    parameters:
+      - name: ownerId
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: petId
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      operationId: newVisitForm
+      summary: Show the new visit form
+      responses:
+        '200':
+          description: Visit form
+    post:
+      operationId: createVisit
+      summary: Record a pet visit
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                date:
+                  type: string
+                  format: date
+                description:
+                  type: string
+              additionalProperties: true
+      responses:
+        '200':
+          description: Visit form with validation errors
+        '302':
+          description: Redirect to the owner
+  /actuator:
+    get:
+      operationId: actuatorIndex
+      summary: List exposed Actuator endpoints
+      responses:
+        '200':
+          description: Actuator endpoint links
+  /actuator/beans:
+    get:
+      operationId: actuatorBeans
+      summary: List application beans
+      responses:
+        '200':
+          description: Application beans
+  /actuator/caches:
+    get:
+      operationId: actuatorCaches
+      summary: List caches
+      responses:
+        '200':
+          description: Cache information
+    delete:
+      operationId: actuatorClearCaches
+      summary: Clear caches
+      responses:
+        '204':
+          description: Caches cleared
+  /actuator/caches/{cache}:
+    parameters:
+      - name: cache
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      operationId: actuatorCache
+      summary: Inspect a cache
+      responses:
+        '200':
+          description: Cache information
+    delete:
+      operationId: actuatorClearCache
+      summary: Clear a cache
+      responses:
+        '204':
+          description: Cache cleared
+  /actuator/conditions:
+    get:
+      operationId: actuatorConditions
+      summary: List auto-configuration conditions
+      responses:
+        '200':
+          description: Auto-configuration condition report
+  /actuator/configprops:
+    get:
+      operationId: actuatorConfigProperties
+      summary: List configuration properties
+      responses:
+        '200':
+          description: Configuration properties
+  /actuator/configprops/{prefix}:
+    parameters:
+      - name: prefix
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      operationId: actuatorConfigPropertiesByPrefix
+      summary: Inspect configuration properties by prefix
+      responses:
+        '200':
+          description: Matching configuration properties
+  /actuator/env:
+    get:
+      operationId: actuatorEnvironment
+      summary: List environment properties
+      responses:
+        '200':
+          description: Environment properties
+  /actuator/env/{toMatch}:
+    parameters:
+      - name: toMatch
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      operationId: actuatorEnvironmentProperty
+      summary: Inspect a matching environment property
+      responses:
+        '200':
+          description: Matching environment properties
+  /actuator/health:
+    get:
+      operationId: actuatorHealth
+      summary: Read application health
+      responses:
+        '200':
+          description: Application health
+  /actuator/health/{path}:
+    parameters:
+      - name: path
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      operationId: actuatorHealthComponent
+      summary: Read health component details
+      responses:
+        '200':
+          description: Health component details
+  /actuator/info:
+    get:
+      operationId: actuatorInfo
+      summary: Read application information
+      responses:
+        '200':
+          description: Application information
+  /actuator/loggers:
+    get:
+      operationId: actuatorLoggers
+      summary: List logger configurations
+      responses:
+        '200':
+          description: Logger configurations
+  /actuator/loggers/{name}:
+    parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      operationId: actuatorLogger
+      summary: Read a logger configuration
+      responses:
+        '200':
+          description: Logger configuration
+    post:
+      operationId: actuatorConfigureLogger
+      summary: Update a logger level
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                configuredLevel:
+                  type: string
+                  nullable: true
+                  enum:
+                    - TRACE
+                    - DEBUG
+                    - INFO
+                    - WARN
+                    - ERROR
+                    - OFF
+              additionalProperties: false
+      responses:
+        '204':
+          description: Logger level updated
+  /actuator/mappings:
+    get:
+      operationId: actuatorMappings
+      summary: List application request mappings
+      responses:
+        '200':
+          description: Application request mappings
+  /actuator/metrics:
+    get:
+      operationId: actuatorMetrics
+      summary: List available metrics
+      responses:
+        '200':
+          description: Available metrics
+  /actuator/metrics/{requiredMetricName}:
+    parameters:
+      - name: requiredMetricName
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      operationId: actuatorMetric
+      summary: Read a metric
+      responses:
+        '200':
+          description: Metric measurements
+  /actuator/scheduledtasks:
+    get:
+      operationId: actuatorScheduledTasks
+      summary: List scheduled tasks
+      responses:
+        '200':
+          description: Scheduled tasks
+  /actuator/sbom:
+    get:
+      operationId: actuatorSbom
+      summary: List available software bills of materials
+      responses:
+        '200':
+          description: Software bill of materials links
+  /actuator/sbom/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      operationId: actuatorSbomById
+      summary: Read a software bill of materials
+      responses:
+        '200':
+          description: Software bill of materials
+  /actuator/threaddump:
+    get:
+      operationId: actuatorThreadDump
+      summary: Read a thread dump
+      responses:
+        '200':
+          description: Thread dump
